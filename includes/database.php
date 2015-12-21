@@ -1,0 +1,38 @@
+<?php
+
+require_once 'config.php';
+
+class MySqlDatabase {
+    
+    private $connection;
+    
+    function __construct() {
+        $this->open_connection();
+    }
+    public function open_connection(){
+        $this->connection = mysqli_connect(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
+        if(mysqli_connect_errno()){
+            die('Database connection failed: ' .
+            mysqli_connect_error() .
+            " (" . mysqli_connect_errno() . ")"
+            )
+        }
+    }
+    
+    public function close_connection(){
+        if(isset($this->connection)) {
+            mysqli_close($this->connection);
+            unset($this->connection);
+        }
+    }
+    
+    public function query($sql) {
+        $result = mysqli_query($this->connection, $sql);
+        if(!$result){
+            die("Database query failed");
+        }
+        return $result;
+    }
+}
+
+$db = new MySqlDatabase();
